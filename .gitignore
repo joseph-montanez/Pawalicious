@@ -1,0 +1,10 @@
+server.vala
+db.vala
+*.jpg
+*.jpg2
+*.png
+*.css
+*.html
+*.gif
+*.xsl
+*.xml
