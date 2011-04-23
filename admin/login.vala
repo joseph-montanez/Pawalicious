@@ -100,9 +100,9 @@ namespace Admin {
 					<form action="" method="post" data-dojo-type="dijit.form.Form">
 						<strong style="color:red">""" + error_msg + """</strong><br />
 						<label for="username">Username</label><br />
-						<input id="username" type="text" name="username" value='""" + Application.encode_attr(username) + """' data-dojo-type="dijit.form.TextBox" /><br />
+						<input id="username" type="text" name="username" value='""" + Application.encode_attr(username) + """' dojo-data-id="username" data-dojo-type="dijit.form.TextBox" /><br />
 						<label for="passwd">Password</label><br />
-						<input id="passwd" type="password" name="passwd" value='""" + Application.encode_attr(passwd) + """' data-dojo-type="dijit.form.TextBox" /><br />
+						<input id="passwd" name="passwd" value='""" + Application.encode_attr(passwd) + """' data-dojo-id="passwd" data-dojo-type="dijit.form.TextBox" type="password" data-dojo-props='type:"password"' /><br />
 						<input type="submit" label="Login" dojoType="dijit.form.Button" />
 					</form>
 				</div>
