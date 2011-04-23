@@ -51,23 +51,24 @@ namespace Admin {
 			var links = this.get_links (false);
 
 			var html = """
-			<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+			<!DOCTYPE html>
 			<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="cs" lang="cs">
 			  <head>
-				<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+				<meta charset="utf-8">
 				<meta http-equiv="content-language" content="cs" />
 				<meta name="author" lang="cs" content="" />
 				<meta name="copyright" lang="cs" content="" />
 				<meta name="description" content="..." />
 				<meta name="keywords" content="..." />
 				<meta name="robots" content="all,follow" />
-
+				<link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/dojo/1.6/dijit/themes/claro/claro.css" type="text/css"> 
 				<link href="/static/css/screen.css" type="text/css" rel="stylesheet" media="screen,projection" />
+				<script src="//ajax.googleapis.com/ajax/libs/dojo/1.6.0/dojo/dojo.xd.js" data-dojo-config="isDebug: true,parseOnLoad: true"></script>
 				<!-- <link rel="stylesheet" media="print" type="text/css" href="/static/css/print.css" /> -->
 
 				<title>Nature Theme</title>
 			  </head>
-			  <body>
+			  <body id="body" class="claro">
 				<div id="layout">
 					<div id="header">
 

@@ -18,7 +18,17 @@ namespace Admin {
 				HashTable<string, string>? post = Soup.Form.decode ((string) request_body.data);
 				HashTable<string, string>? get = this.route.query;
 				var multipart = new Soup.Multipart.from_message (request_headers, request_body);
-				var image = new Application.Upload (request_headers, request_body, "image");
+				var image = new Application.Upload (request_headers, request_body, "uploadedfiles[]");
+				if (image.is_uploaded) {
+					stderr.printf ("is uploaded...\n");
+					foreach (var file in image.data) {
+						stderr.printf ("writing to file...\n");
+						file.write(file.filename);
+					}
+					this.route.msg.set_status (200);
+					return;
+				}
+				/*
 				if (image.filename != "" && image.filename != null) {
 					stderr.printf ("writing to file...\n");
 					image.write ("image.png");
@@ -35,7 +45,7 @@ namespace Admin {
 						stderr.printf ("Error: " + e.message);
 					}
 				}
-				
+				*/
 				string? item_id = null;
 				string? category_id = null;
 				var error = true;
@@ -97,18 +107,77 @@ namespace Admin {
 				<div id="intro">
 					<div id="intro-in">
 						<h2>Add / Edit an Item</h2>
-						<form action="" method="post" enctype="multipart/form-data">
+						<form data-dojo-type="dijit.form.Form" id="myForm" action="/admin/item/edit" method="post" enctype="multipart/form-data">
 							<input id="item_id" type="hidden" name="item_id" value='""" + Application.encode_attr(item_id) + """' />
 							<strong style="color:red">""" + error_msg + """</strong><br />
-							<label for="item_name">Item Name</label>
-							<input id="item_name" type="text" name="item_name" value='""" + Application.encode_attr(item_name) + """' /><br />
+							<label for="item_name">Item Name</label><br />
+							<input dojo-data-id="item_name" data-dojo-type="dijit.form.TextBox" id="item_name" type="text" name="item_name" value='""" + Application.encode_attr(item_name) + """' /><br />
 							<label for="item_description">Description</label>
-							<textarea name="item_description" id="item_description">""" + Application.encode_attr(item_description) + """</textarea><br />
-							<input type="file" name="image" value="" />
-							<input type="submit" value="Save" />
+							<div dojo-data-id="item_description" data-dojo-type="dijit.Editor" name="item_description" id="item_description">""" + Application.encode_attr(item_description) + """</div><br />
+							<h2>Images</h2>
+							<input name="uploadedfile" multiple="true" type="file" id="uploader" dojoType="dojox.form.Uploader" url="/admin/item/edit" label="Select Some Files" >
+							<div id="files" dojoType="dojox.form.uploader.FileList" uploaderId="uploader"></div>
+							<input type="submit" label="Submit" dojoType="dijit.form.Button" />
 						</form>
 					</div>
 				</div>
+				
+				<script type="text/javascript">
+					dojo.require("dijit.form.TextBox");
+					dojo.require("dijit.Editor");
+					dojo.require("dijit.form.DateTextBox");
+					dojo.require("dijit.form.FilteringSelect");
+					dojo.require("dijit.form.Form");
+					dojo.require("dojo.data.ItemFileReadStore");
+					dojo.require("dijit.form.Button");
+					dojo.require("dojox.form.Uploader");
+					dojo.require("dojox.form.uploader.FileList");
+					dojo.require("dojox.form.uploader.plugins.HTML5");
+					
+					dojo.byId('body').ondrop = function (e) {
+						e.preventDefault();
+						return false;
+					};
+					dojo.byId('body').dragend = function (e) {
+						e.preventDefault();
+						return false;
+					}
+				    function initDragEvents() {
+						var div = $('editor');
+						div.ondragenter = div.ondragover = function (e) {
+							e.preventDefault();
+							e.dataTransfer.dropEffect = 'copy';
+							return false;
+						}
+						div.ondragover = function (e) {
+							e.preventDefault();
+							return false;
+						}
+						div.dragend = function (e) {
+							e.preventDefault();
+							return false;
+						}
+						div.ondrop = function (e) {
+							e.preventDefault();
+							for (var i = 0; i < e.dataTransfer.files.length; i++) {
+								var file = e.dataTransfer.files[i]; 
+								
+								var xhr = new XMLHttpRequest;
+								xhr.open('post', 'upload.php', true);
+								xhr.onreadystatechange = function () {
+								    if (this.readyState != 4)
+								        return;
+								    insertAtCursor($('editor'), this.responseText);
+								}
+								xhr.setRequestHeader('Content-Type', 'multipart/form-data');
+								xhr.setRequestHeader('X-File-Name', file.fileName);
+								xhr.setRequestHeader('X-File-Size', file.fileSize);
+								xhr.send(file);
+							}
+							return false;
+						};
+					}
+				</script>
 				""" + tpl.footer ();
 			
 				this.route.msg.set_status (200);
