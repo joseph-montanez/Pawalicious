@@ -97,16 +97,21 @@ namespace Admin {
 					<p class="intro">
 						Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident.
 					</p>
-					<form action="" method="post">
+					<form action="" method="post" data-dojo-type="dijit.form.Form">
 						<strong style="color:red">""" + error_msg + """</strong><br />
-						<label for="username">Username</label>
-						<input id="username" type="text" name="username" value='""" + Application.encode_attr(username) + """' /><br />
-						<label for="passwd">Password</label>
-						<input id="passwd" type="password" name="passwd" value='""" + Application.encode_attr(passwd) + """' /><br />
-						<input type="submit" value="Login" />
+						<label for="username">Username</label><br />
+						<input id="username" type="text" name="username" value='""" + Application.encode_attr(username) + """' data-dojo-type="dijit.form.TextBox" /><br />
+						<label for="passwd">Password</label><br />
+						<input id="passwd" type="password" name="passwd" value='""" + Application.encode_attr(passwd) + """' data-dojo-type="dijit.form.TextBox" /><br />
+						<input type="submit" label="Login" dojoType="dijit.form.Button" />
 					</form>
 				</div>
 			</div>
+			<script type="text/javascript">
+				dojo.require("dijit.form.Button");
+				dojo.require("dijit.form.TextBox");
+				dojo.require("dijit.form.Form");
+			</script>
 			""" + tpl.footer ();
 			
 			this.route.msg.set_status (200);
