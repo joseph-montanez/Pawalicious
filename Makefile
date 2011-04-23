@@ -1,4 +1,4 @@
-all: server.vala admin/template.vala admin/links.vala admin/routes.vala admin/dashboard.vala admin/item/edit.vala admin/login.vala db.vala
+all: server.vala admin/template.vala admin/links.vala admin/routes.vala admin/dashboard.vala admin/item/edit.vala admin/login.vala application.vala db.vala
 	find . -type f -name "*.c" -exec rm -f {} \;
 	valac \
 		-g \
@@ -18,6 +18,7 @@ all: server.vala admin/template.vala admin/links.vala admin/routes.vala admin/da
 		admin/item/edit.vala \
 		admin/routes.vala \
 		admin/login.vala \
+		application.vala \
 		db.vala \
 		server.vala
 clean:
