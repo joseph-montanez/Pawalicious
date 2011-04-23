@@ -10,6 +10,7 @@ while true; do
 		killall -9 server
 		make all
 		./server &
+		notify-send "Server" "Started"
 	fi
-	sleep 0.25
+	sleep 1
 done
