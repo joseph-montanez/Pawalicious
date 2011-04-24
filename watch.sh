@@ -2,15 +2,17 @@
 last=""
 
 while true; do
-	current=`tar cO --mtime=0 . | sha1sum -`;
+	current=`tar cO --exclude=tests --mtime=0 . | sha1sum -`;
 	#echo "$current, $last \n"
 	if [ "$last" != "$current" ]; then
 		last="$current"
+		clear; reset;
 		echo "compiling..."
 		killall -9 server
-		make all
+		make
 		./server &
-		notify-send "Server" "Started"
+		#notify-send "Server" "Started"
+		./tests/login.sh
 	fi
-	sleep 1
+	sleep 2
 done
