@@ -61,7 +61,7 @@ namespace Application {
 			this.headers = headers;
 			this.body = body;
 			this.name = name;
-			this.data = new Gee.ArrayList<UploadFile> ();
+			this.data = new Gee.HashMap<string, Gee.ArrayList<UploadFile>> ();
 			this.parse ();
 		}
 		
@@ -92,14 +92,24 @@ namespace Application {
 							if (disposition != "form-data") {
 								continue;
 							}
+							var name = params.lookup ("name");
 							stderr.printf("name: %s\n", params.lookup ("name"));
-							if (params.lookup ("name") == this.name) {
+							stderr.printf("length: %s\n", filesize.to_string ());
+							//stderr.printf("data: %s\nend data;\n\n", (string) part_body.data);
+							var body_str = (string) part_body.data;
+							var str_parts = body_str.split("\r\n");
+							var post_val =  str_parts[0];
+							
+							if (post_val.length == filesize) {
+								// This is a post value, and not a file upload?
+							} else {
+								// this is a file?
 								var filename = params.lookup ("filename");
-								stderr.printf ("%s: %s\n", filename, filesize.to_string ());
+								//stderr.printf ("%s: %s\n", filename, filesize.to_string ());
 								var uploadfile = new UploadFile (
 									filename, filesize, part_body
 								);
-								this.data.add(uploadfile);
+								this.data[name].add(uploadfile);
 								if (!this.is_uploaded) {
 									this.is_uploaded = true;
 								} else {
