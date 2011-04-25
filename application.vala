@@ -49,27 +49,41 @@ namespace Application {
 		}
 	}
 	
-	class Upload : Object {
+	class UploadFileList : Object {
+		public Gee.ArrayList<UploadFile> data { public get; public set; }
+		public UploadFileList () {
+			this.data = new Gee.ArrayList<UploadFile> ();
+		}
+		
+		public string get_first () {
+			var value = "";
+			
+			if (this.data.size > 0) {
+				var first = this.data.get (0);
+				value = (string) first.data.data;
+				stderr.printf (value + "\n");
+			}
+			
+			return value;
+		}
+	}
+	
+	class Multipart : Object {
 		public unowned Soup.MessageHeaders headers { public get; public set; }
 		public unowned Soup.MessageBody body { public get; public set; }
-		public string name { public get; public set; }
-		public bool is_uploaded { get; set; default = false; }
-		public bool is_multi { get; set; default = false; }
-		public Gee.ArrayList<UploadFile> data { public get; public set; }
-		public Upload (Soup.MessageHeaders headers, Soup.MessageBody body,
-			string name) {
+		public Gee.HashMap<string, UploadFileList> data { public get; public set; }
+		public Multipart (Soup.MessageHeaders headers, Soup.MessageBody body) {
 			this.headers = headers;
 			this.body = body;
-			this.name = name;
-			this.data = new Gee.HashMap<string, Gee.ArrayList<UploadFile>> ();
-			this.parse ();
+			this.data = new Gee.HashMap<string, UploadFileList> ();
+			this.decode ();
 		}
 		
-		public int number_of_files () {
-			return this.data.size;
+		public bool has_key (string key) {
+			return this.data.has_key (key);
 		}
 		
-		public void parse () {
+		public void decode () {
 			var multipart = new Soup.Multipart.from_message (
 				this.headers, this.body
 			);
@@ -100,22 +114,31 @@ namespace Application {
 							var str_parts = body_str.split("\r\n");
 							var post_val =  str_parts[0];
 							
-							if (post_val.length == filesize) {
-								// This is a post value, and not a file upload?
+							UploadFileList filelist;
+							// Get the exiting list if already there
+							if (this.data.has_key (name)) {
+								filelist = this.data[name];
 							} else {
+								filelist = new UploadFileList ();	
+							}
+							
+							if (post_val.length == filesize) {
+								stderr.printf ("%s is a post '%s'\n", name, post_val.strip ());
+								// This is a post value, and not a file upload?
+								var uploadfile = new UploadFile (
+									"", filesize, new Soup.Buffer(Soup.MemoryUse.COPY, post_val.data)
+								);
+								filelist.data.add (uploadfile);
+							} else {
+								stderr.printf ("%s is a file\n", name);
 								// this is a file?
 								var filename = params.lookup ("filename");
-								//stderr.printf ("%s: %s\n", filename, filesize.to_string ());
 								var uploadfile = new UploadFile (
 									filename, filesize, part_body
 								);
-								this.data[name].add(uploadfile);
-								if (!this.is_uploaded) {
-									this.is_uploaded = true;
-								} else {
-									this.is_multi = true;
-								}
+								filelist.data.add (uploadfile);
 							}
+							this.data[name] = filelist;
 						}
 					}
 				}
