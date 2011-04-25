@@ -13,6 +13,44 @@ namespace Application {
 		}
 	}
 	
+	public void resize (string filename) {
+		/* TODO: make this function safe for filenames with spaces */
+		var cmd = "convert '" + filename + "' -quality 75 -resize 120x120 image-120x120.jpg";
+		var standard_output = ""; 
+		var standard_error = ""; 
+		var exit_status = 0;
+		try {
+			Process.spawn_command_line_sync (cmd, out standard_output, out standard_error, out exit_status);
+			stderr.printf (standard_output + "\n");
+			stderr.printf (standard_error + "\n");
+		} catch (SpawnError e) {
+			stderr.printf ("Error: " + e.message);
+		}
+	}
+	
+	public uint64[] get_size (string filename) {
+		uint64[] size = new uint64[2];
+		size[0] = 0;
+		size[1] = 0;
+		/* TODO: make this function safe for filenames with spaces */
+		var cmd = "identify -format \"%[fx:w]x%[fx:h]\" '" + filename + "'";
+		var standard_output = ""; 
+		var standard_error = ""; 
+		var exit_status = 0;
+		try {
+			Process.spawn_command_line_sync (cmd, out standard_output, out standard_error, out exit_status);
+			var sizes = standard_output.split("x");
+			size[0] = sizes[0].to_uint64 ();
+			size[1] = sizes[1].to_uint64 ();
+			stderr.printf (standard_output + "\n");
+			stderr.printf (standard_error + "\n");
+		} catch (SpawnError e) {
+			stderr.printf ("Error: " + e.message);
+		}
+		
+		return size;
+	}
+	
 	class UploadFile : Object {
 		public string filename { public get; public set; }
 		public int64 filesize { public get; public set; }
