@@ -108,48 +108,7 @@ namespace Admin { namespace Item {
 					item_id = get.lookup ("id");
 					category_id = get.lookup ("category_id");
 				}
-			
-				/*
-				if (username != null && passwd != null) {
-					unichar[] username_escaped = new unichar[username.length * 2 + 1];
-					unichar[] passwd_escaped = new unichar[username.length * 2 + 1];
 				
-					var dbh = new Application.Db ();
-					unowned Mysql.Database? db = dbh.get_db ();
-				
-					db.real_escape_string ((string) username_escaped, username, username.length);
-					db.real_escape_string ((string) passwd_escaped, passwd, passwd.length);
-					var query = "SELECT * FROM zoey_admins WHERE username = '" + (string) username_escaped + "' AND passwd = '" + (string) passwd_escaped + "'";
-					var error_no = db.query (query);
-				
-					if (error_no == 0) {
-						var result = db.use_result ();
-						if (result != null) {
-							error = false;
-							var admin_id = dbh.get_row_value (result, "id");
-							if (admin_id != "") {
-								if (!this.session.has_member ("admin")) {
-									this.session.set_object_member ("admin", new Json.Object());
-								}
-								var admin = this.session.get_object_member ("admin");
-								admin.set_int_member("id", int64.parse (admin_id));
-								unowned Soup.MessageHeaders headers = this.route.msg.response_headers;
-								headers.append("Location", "/admin/dashboard");
-								this.route.msg.set_status (301);
-								return;
-							} else {
-								error_msg = "Invalid Username or Password";
-							}
-							// TODO: add to session
-						} else {
-							error_msg = "Invalid Username or Password";
-						}
-					} else {
-						error_msg = "Sorry having problems accessing the database";
-						stderr.printf (db.error () + "\n");
-					}
-				}
-				*/
 				var tpl = new Template();
 			
 				string html = tpl.header ("login") + """
