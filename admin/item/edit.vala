@@ -31,19 +31,20 @@ namespace Admin { namespace Item {
 					query += key + ",";
 				}
 				stderr.printf ("Keys: " + query + "\n");
-				query = query.substring (0, query.length - 2) + ") VALUES (";
+				query = query.substring (0, query.length - 1) + ") VALUES (";
 				
 				foreach (string value in values) {
 					query += "\"" + value + "\",";
 				}
 				stderr.printf ("Values: " + query + "\n");
-				query = query.substring (0, query.length - 2) + ")";
+				query = query.substring (0, query.length - 1) + ")";
 				
 				/*var query = "SELECT * FROM zoey_admins WHERE username = '" + (string) username_escaped + "' AND passwd = '" + (string) passwd_escaped + "'";
 				var error_no = db.query (query);		
 				*/	
 				
 				stderr.printf ("Query: " + query + "\n");
+				var error_no = db.query (query);
 			}
 			/*
 			public void add_item (string? item_id, string? category_id, string? item_name, string? item_description) {
@@ -100,47 +101,8 @@ namespace Admin { namespace Item {
 				HashTable<string, string>? post = Soup.Form.decode ((string) request_body.data);
 				HashTable<string, string>? get = this.route.query;
 				var multipart = new Soup.Multipart.from_message (request_headers, request_body);
-				var image = new Application.Upload (request_headers, request_body, "uploadedfiles[]");
+				var post_multipart = new Application.Multipart (request_headers, request_body);
 				
-				/*
-				if (post != null) {
-					post.foreach((key, val) => {
-						stderr.printf ("POST KEY \"%s\"\nPOST VALUE \"%s\"", key, val);
-					});
-				}
-				if (get != null) {
-					get.foreach((key, val) => {
-						stderr.printf ("GET VALUE - %s: %s", key, val);
-					});
-				}
-				*/
-				if (image.is_uploaded) {
-					stderr.printf ("is uploaded...\n");
-					foreach (var file in image.data) {
-						stderr.printf ("writing to file...\n");
-						file.write(file.filename);
-					}
-					this.route.msg.set_status (200);
-					return;
-				}
-				/*
-				if (image.filename != "" && image.filename != null) {
-					stderr.printf ("writing to file...\n");
-					image.write ("image.png");
-					//-- Scale Image
-					var cmd = "convert 'image.png' -quality 75 -resize 120x120 image-120x120.jpg";
-					var standard_output = ""; 
-					var standard_error = ""; 
-					var exit_status = 0;
-					try {
-						Process.spawn_command_line_sync (cmd, out standard_output, out standard_error, out exit_status);
-						stderr.printf (standard_output + "\n");
-						stderr.printf (standard_error + "\n");
-					} catch (SpawnError e) {
-						stderr.printf ("Error: " + e.message);
-					}
-				}
-				*/
 				string? item_id = null;
 				string? category_id = null;
 				string? item_name = null;
@@ -158,15 +120,46 @@ namespace Admin { namespace Item {
 					item_description = post.lookup ("item_description");
 					var fields = new Gee.HashMap<string, string> ();
 				
-					if(item_name != null && item_name != "") {
-						fields["title"] = item_name;
+					if(post_multipart.has_key("item_name")) {
+						var title_field = post_multipart.data["item_name"];
+						fields["title"] = title_field.get_first ();
 					}
-				
-					if(item_description != null && item_description != "") {
-						fields["description"] = item_description;
+					
+					if(post_multipart.has_key("item_description")) {
+						var description_field = post_multipart.data["item_description"];
+						fields["description"] = description_field.get_first ();
 					}
 					
 					this.insert ("zoey_items", fields);
+
+					if (post_multipart.has_key("uploadedfiles[]")) {
+						var image = post_multipart.data["uploadedfiles[]"].data;
+						stderr.printf ("is uploaded...\n");
+						foreach (var file in image) {
+							stderr.printf ("writing to file...\n");
+							file.write(file.filename);
+						}
+						this.route.msg.set_status (200);
+						return;
+					}
+					/*
+					if (image.filename != "" && image.filename != null) {
+						stderr.printf ("writing to file...\n");
+						image.write ("image.png");
+						//-- Scale Image
+						var cmd = "convert 'image.png' -quality 75 -resize 120x120 image-120x120.jpg";
+						var standard_output = ""; 
+						var standard_error = ""; 
+						var exit_status = 0;
+						try {
+							Process.spawn_command_line_sync (cmd, out standard_output, out standard_error, out exit_status);
+							stderr.printf (standard_output + "\n");
+							stderr.printf (standard_error + "\n");
+						} catch (SpawnError e) {
+							stderr.printf ("Error: " + e.message);
+						}
+					}
+					*/
 				} else if (get != null) {
 					item_id = get.lookup ("id");
 					category_id = get.lookup ("category_id");
