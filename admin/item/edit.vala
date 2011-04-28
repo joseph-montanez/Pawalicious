@@ -88,6 +88,9 @@ namespace Admin { namespace Item {
 							var image = post_multipart.data["uploadedfiles[]"].data;
 							stderr.printf ("is uploaded...\n");
 							foreach (var file in image) {
+								// Save image to file, yay!
+								file.write (file.filename);
+								
 								var image_fields = new Gee.HashMap<string, string> ();
 								image_fields["item_id"] = last_id.to_string ();
 								image_fields["filename"] = file.filename;
@@ -98,7 +101,6 @@ namespace Admin { namespace Item {
 								/* Resize the image */
 								this.insert ("zoey_items_images", image_fields);
 								stderr.printf ("writing to file...\n");
-								file.write (file.filename);
 							}
 							this.route.msg.set_status (200);
 							return;

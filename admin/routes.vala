@@ -5,12 +5,12 @@ namespace Admin {
 		public string path { public get; public set; }
 		public GLib.HashTable? query { public get; public set; }
 		public unowned Soup.ClientContext client { public get; public set; }
-		public Pawalicous application { public get; public set; }
+		public WebApplication application { public get; public set; }
 		
 		public Routes (
 			Soup.Server server, Soup.Message msg, string path,
 			GLib.HashTable? query, Soup.ClientContext client, 
-			Pawalicous application
+			WebApplication application
 		) {
 			this.server = server;
 			this.msg = msg;
@@ -39,6 +39,7 @@ namespace Admin {
 			} else {
 				var login = new Login (this, session, sid);
 				login.run ();
+				this.application.save_session (sid);
 				return;
 			}
 			
@@ -49,26 +50,12 @@ namespace Admin {
 			} else if (path == "/admin/dashboard/" || path == "/admin/dashboard") {
 				var dashboard = new Dashboard (this, session, sid);
 				dashboard.run ();
-				return;
-			}  else if (path == "/admin/item/edit/" || path == "/admin/item/edit") {
+			}  else if (path.index_of("/admin/item/edit") > -1) {
 				var edit = new Item.Edit (this, session, sid);
 				edit.run ();
-				return;
 			} else {
-				/*
-				var cmd = """xsltproc simple.xsl "<bugs>     <bug id=\"3\" severity=\"1\" title=\"Hello Wold has bugs in it\">        <owner>nobody</owner>        <sa id=\"10\" owner=\"george\"/>        <entry date=\"2007-10-25\">            The bug was formed from a service assist ticket.        </entry>        <entry date=\"2007-10-27\">            This is an entry in the future. Ohhhh....        </entry>    </bug></bugs>";""";
-				var standard_output = ""; 
-				var standard_error = ""; 
-				var exit_status = 0;
-				try {
-					Process.spawn_command_line_sync (cmd, out standard_output, out standard_error, out exit_status);
-					stderr.printf (standard_output + "\n");
-					stderr.printf (standard_error + "\n");
-				} catch (SpawnError e) {
-					stderr.printf ("Error: " + e.message);
-				}
-				*/
 			}
+			this.application.save_session (sid);
 	  	}
 	}
 }

@@ -72,7 +72,7 @@ namespace Admin {
 				<div id="layout">
 					<div id="header">
 
-						<h1 id="logo"><a href="./" title="Nature Theme">Pawalicous</a></h1>
+						<h1 id="logo"><a href="./" title="Nature Theme">""" + Config.SITE_NAME + """</a></h1>
 						<hr class="noscreen" />   
 
 						<p class="noscreen noprint">
@@ -109,7 +109,7 @@ namespace Admin {
 					</div>
 
 					<div id="footer" class="shadow">
-						<div class="f-left">Copyright &copy; 2011 <a href="#">Pawalicous</a></div>
+						<div class="f-left">Copyright &copy; 2011 <a href="#">""" + Config.SITE_NAME + """</a></div>
 						<div class="f-right"></div>
 
 					</div>

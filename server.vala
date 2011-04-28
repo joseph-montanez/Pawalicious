@@ -6,6 +6,17 @@ class WebApplication {
 		this.sessions = new Gee.HashMap<string, Json.Object> ();
 	}
 	
+	public void save_session (string sid)
+	{
+		var node = new Json.Node (Json.NodeType.OBJECT);
+		node.set_object (this.sessions[sid]);
+		var generator = new Json.Generator ();
+		generator.set_root (node);
+		try {
+			generator.to_file (sid + ".json");
+		} catch (Error e) {}
+	}
+	
 	public void create_session(string sid)
 	{
 		this.sessions[sid] = new Json.Object ();
@@ -60,15 +71,17 @@ class WebApplication {
 					if (json != "") {
 						try {
 							var parser = new Json.Parser ();
-							parser.load_from_data (json);
-							this.sessions[sid] = parser.get_root ().get_object ();
-							created_session = true;
+							var loaded = parser.load_from_data (json);
+							if (loaded) {
+								this.sessions[sid] = parser.get_root ().get_object ();
+								created_session = true;
+							}
 						} catch (Error e) {}
 					}
 				}
 			}
 			if (!created_session) {
-				this.create_session ();
+				this.create_session (sid);
 			}
 			var cookie = new Soup.Cookie ("sid", sid, "127.0.0.1", "/", 12000);
 			headers.append("Set-Cookie", cookie.to_set_cookie_header ());

@@ -39,7 +39,7 @@ namespace Application {
 		var exit_status = 0;
 		try {
 			Process.spawn_command_line_sync (cmd, out standard_output, out standard_error, out exit_status);
-			var sizes = standard_output.split("x");
+			var sizes = standard_output.split("x", 2);
 			size[0] = sizes[0].to_uint64 ();
 			size[1] = sizes[1].to_uint64 ();
 			stderr.printf (standard_output + "\n");
@@ -99,6 +99,10 @@ namespace Application {
 			if (this.data.size > 0) {
 				var first = this.data.get (0);
 				value = (string) first.data.data;
+				// WHY IS THIS NULL!?
+				if (value == null) {
+					value = "";
+				}
 				stderr.printf (value + "\n");
 			}
 			

@@ -97,12 +97,12 @@ namespace Admin {
 					<p class="intro">
 						Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident.
 					</p>
-					<form action="" method="post" data-dojo-type="dijit.form.Form">
+					<form action="" method="post" data-dojo-type="dijit.form.Form" data-dojo-props='method:"post"'>
 						<strong style="color:red">""" + error_msg + """</strong><br />
 						<label for="username">Username</label><br />
-						<input id="username" type="text" name="username" value='""" + Application.encode_attr(username) + """' dojo-data-id="username" data-dojo-type="dijit.form.TextBox" /><br />
+						<input id="username" type="text" name="username" value='""" + Application.encode_attr(username) + """' data-dojo-id="username" data-dojo-type="dijit.form.TextBox" data-dojo-props='name:"username"' /><br />
 						<label for="passwd">Password</label><br />
-						<input id="passwd" name="passwd" value='""" + Application.encode_attr(passwd) + """' data-dojo-id="passwd" data-dojo-type="dijit.form.TextBox" type="password" data-dojo-props='type:"password"' /><br />
+						<input id="passwd" name="passwd" value='""" + Application.encode_attr(passwd) + """' data-dojo-id="passwd" data-dojo-type="dijit.form.TextBox" type="password" data-dojo-props='name: "passwd", type:"password"' /><br />
 						<input type="submit" label="Login" dojoType="dijit.form.Button" />
 					</form>
 				</div>
