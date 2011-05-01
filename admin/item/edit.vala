@@ -72,12 +72,14 @@ namespace Admin { namespace Item {
 					if(post_multipart.has_key("title")) {
 						var title_field = post_multipart.data["title"];
 						title = title_field.get_first ();
+						title = title.strip ();
 						fields["title"] = title;
 					}
 					
 					if(post_multipart.has_key("description")) {
 						var description_field = post_multipart.data["description"];
 						description = description_field.get_first ();
+						description = description.strip ();
 						fields["description"] = description;
 					}
 					
@@ -117,18 +119,18 @@ namespace Admin { namespace Item {
 				<div id="intro">
 					<div id="intro-in">
 						<h2>Add / Edit an Item</h2>
-						<form data-dojo-type="dijit.form.Form" id="myForm" action="/admin/item/edit" method="post" enctype="multipart/form-data">
+						<form id="myForm" action="/admin/item/edit" method="post" enctype="multipart/form-data">
 							<input id="item_id" type="hidden" name="item_id" value='""" + Application.encode_attr(item_id) + """' /> 
 							<strong style="color:red">""" + error_msg + """</strong><br />
 							<label for="title">Item Name</label><br />
 							<input dojo-data-id="title" data-dojo-type="dijit.form.TextBox" id="title" type="text" name="title" value='""" + Application.encode_attr(title) + """' data-dojo-props='name:"title"' /><br />
 							<label for="description">Description</label>
-							<textarea name="description" style="display: none"></textarea>
-							<div dojo-data-id="description" dojo-data-name="description" data-dojo-type="dijit.Editor" name="description" id="description" data-dojo-props='name:"description"'>""" + Application.encode_attr(description) + """</div><br />
+							<textarea id="description" name="description" style="display: none"></textarea>
+							<div dojo-data-id="editor_description" dojo-data-name="editor_description" data-dojo-type="dijit.Editor" data-dojo-props='name:"description"'>""" + Application.encode_attr(description) + """</div><br />
 							<h2>Images</h2>
 							<input name="uploadedfile" multiple="true" type="file" id="uploader" dojoType="dojox.form.Uploader" url="/admin/item/edit" label="Select Some Files" >
 							<div id="files" dojoType="dojox.form.uploader.FileList" uploaderId="uploader"></div>
-							<input type="submit" label="Submit" dojoType="dijit.form.Button" />
+							<input type="submit" id="submitter" label="Submit" dojoType="dijit.form.Button" />
 						</form>
 					</div>
 				</div>
@@ -145,6 +147,18 @@ namespace Admin { namespace Item {
 					dojo.require("dojox.form.uploader.FileList");
 					dojo.require("dojox.form.uploader.plugins.HTML5");
 					
+					dojo.ready(function () {
+						dijit.byId('dijit_Editor_0').connect(dijit.byId('dijit_Editor_0'), 'onKeyUp', function (evt) {
+							dojo.attr('description', 'value', dijit.byId('dijit_Editor_0').get('value'));
+						});
+					});
+					/*
+					dojo.connect(dojo.byId('submitter'), 'onclick', function (evt) {
+						dojo.attr('description', 'value', dijit.byId('dijit_Editor_0').get('value'));
+						dojo.attr('description', 'innerHTML', dijit.byId('dijit_Editor_0').get('value'));
+					});
+					*/
+					/*
 					dojo.byId('body').ondrop = function (e) {
 						e.preventDefault();
 						return false;
@@ -153,6 +167,7 @@ namespace Admin { namespace Item {
 						e.preventDefault();
 						return false;
 					}
+					*/
 				</script>
 				""" + tpl.footer ();
 			
