@@ -53,6 +53,10 @@ namespace Admin {
 			}  else if (path.index_of("/admin/item/edit") > -1) {
 				var edit = new Item.Edit (this, session, sid);
 				edit.run ();
+			}   else if (path.index_of("/admin/item") > -1) {
+				stderr.printf ("Item listing\n");
+				var list = new Item.Listing (this, session, sid);
+				list.run ();
 			} else {
 			}
 			this.application.save_session (sid);
