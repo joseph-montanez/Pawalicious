@@ -98,10 +98,19 @@ namespace Application {
 			
 			if (this.data.size > 0) {
 				var first = this.data.get (0);
-				value = (string) first.data.data;
-				// WHY IS THIS NULL!?
-				if (value == null) {
-					value = "";
+				if (first.data.length > 0) {
+					/*
+					var tmpstr = "";
+					for (var i = 0; i < first.data.length; i++) {
+						tmpstr += first.data.data[i].to_string ("%c");
+					}
+					stderr.printf ("Binary Value: " + tmpstr + "\n");
+					*/
+					value = (string) first.data.data;
+					// WHY IS THIS NULL!?
+					if (value == null) {
+						value = "";
+					}
 				}
 				stderr.printf (value + "\n");
 			}
