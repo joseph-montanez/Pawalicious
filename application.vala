@@ -40,8 +40,8 @@ namespace Application {
 		try {
 			Process.spawn_command_line_sync (cmd, out standard_output, out standard_error, out exit_status);
 			var sizes = standard_output.split("x", 2);
-			size[0] = sizes[0].to_uint64 ();
-			size[1] = sizes[1].to_uint64 ();
+			size[0] = uint64.parse (sizes[0]);
+			size[1] = uint64.parse (sizes[1]);
 			stderr.printf (standard_output + "\n");
 			stderr.printf (standard_error + "\n");
 		} catch (SpawnError e) {

@@ -1,4 +1,4 @@
-all: server.vala admin/template.vala admin/links.vala admin/routes.vala admin/dashboard.vala admin/item/edit.vala admin/login.vala application.vala db.vala
+all: server.vala admin/template.vala admin/links.vala admin/routes.vala admin/dashboard.vala admin/item/edit.vala admin/item/listing.vala admin/login.vala application.vala db.vala config.vala
 	find . -type f -name "*.c" -exec rm -f {} \;
 	valac \
 		-g \
@@ -10,15 +10,17 @@ all: server.vala admin/template.vala admin/links.vala admin/routes.vala admin/da
 		--pkg libsoup-2.4 \
 		--pkg libxml-2.0 \
 		--pkg=mysql --pkg libxml-2.0 --Xcc='-lmysqlclient' \
-		--main=Pawalicous.main -o server \
+		--main=WebApplication.main -o server \
 		--thread \
 		admin/template.vala  \
 		admin/links.vala \
 		admin/dashboard.vala \
 		admin/item/edit.vala \
+		admin/item/listing.vala \
 		admin/routes.vala \
 		admin/login.vala \
 		application.vala \
+		config.vala \
 		db.vala \
 		server.vala
 clean:
