@@ -31,7 +31,7 @@ class WebApplication {
 
 		request_headers.foreach ((key, name) => {
 			if (key == "Cookie") {
-				unowned Soup.Cookie parsedCookie = Soup.Cookie.parse (
+				Soup.Cookie parsedCookie = Soup.Cookie.parse (
 					key.replace ("Cookie:", "").strip () + ":" + name,
 					new Soup.URI ("/")
 				);
@@ -163,8 +163,7 @@ class WebApplication {
 				/* ETag */
 				headers.append ("ETag", "\"" + info.get_etag () + "\"");
 				/* Last-Modified */
-				var modified = TimeVal();
-				info.get_modification_time (out modified);
+				var modified = info.get_modification_time ();
 				headers.append ("Last-Modified", modified.to_iso8601 ());
 			}
 			/* Status */

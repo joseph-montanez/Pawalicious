@@ -79,8 +79,8 @@ namespace Application {
 			stderr.printf ("Keys: " + query + "\n");
 			query = query.substring (0, query.length - 1) + ") VALUES (";
 			
-			foreach (string value in values) {
-				query += "\"" + value + "\",";
+			foreach (string val in values) {
+				query += "\"" + val + "\",";
 			}
 			stderr.printf ("Values: " + query + "\n");
 			query = query.substring (0, query.length - 1) + ")";
